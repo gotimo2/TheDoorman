@@ -13,6 +13,8 @@
     <PackageReference Include="CoreRCON" />
     <PackageReference Include="Discord.Net.Commands" />
     <PackageReference Include="Discord.Net.Core" />
+    <PackageReference Include="Discord.Net.Interactions" />
+    <PackageReference Include="Discord.Net.WebSocket" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
   </ItemGroup>

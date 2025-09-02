@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace TheDoorman
 {
-    public class DiscordConfig
+    public static class CommandNames
     {
-        public string Token { get; set; } = string.Empty;
-
-        public ulong GuildId { get; set; } = 0;
+        public const string Checkin = "check-in";
     }
 }

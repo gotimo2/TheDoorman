@@ -25,20 +25,20 @@ namespace TheDoorman
             _client = new RCON(new IPEndPoint(IPAddress.Parse(_config.HostIpAddress), _config.RCONPort), _config.RCONPassword);
         }
 
-        public async Task<bool> AddToWhitelist(string username)
+        public async Task<string> AddToWhitelist(string username)
         {
+            var isValid = ValidUsernameRegex().IsMatch(username) && username.Length > 3 && username.Length < 16;
 
-            var isValid = ValidUsernameRegex().IsMatch(username);
             if (!isValid)
             {
-                return false;
+                return "Invalid username!";
             }
 
             await _client.ConnectAsync();
 
             await _client.SendCommandAsync(string.Format("whitelist add {0}", username));
 
-            return true;
+            return $"Added user {username} to whitelist.";
         }
 
         [GeneratedRegex(@"^[a-zA-Z0-9_]{3,16}$", RegexOptions.Compiled)]
