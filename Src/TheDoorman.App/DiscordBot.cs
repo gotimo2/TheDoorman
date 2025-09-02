@@ -2,12 +2,6 @@
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TheDoorman
 {
@@ -20,24 +14,27 @@ namespace TheDoorman
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("Connecting to discord...");
 
             await _client.LoginAsync(TokenType.Bot, _config.Token);
 
             await _client.StartAsync();
 
             while (_client.ConnectionState != ConnectionState.Connected)
-            {
-                await Task.Delay(400);
+            { 
+                await Task.Delay(100, stoppingToken);
             }
 
-            await CreateCommand();
+            _logger.LogInformation("Connected to discord under {Account}", _client.CurrentUser.Username);
+
+            await CreateCommands();
 
             _client.SlashCommandExecuted += HandleCommand;
 
             await Task.Delay(Timeout.Infinite, stoppingToken);
         }
 
-        private async Task CreateCommand()
+        private async Task CreateCommands()
         {
             var guild = _client.GetGuild(_config.GuildId);
             var builder = new SlashCommandBuilder()
@@ -45,7 +42,10 @@ namespace TheDoorman
                 .WithDescription("Add the specified name to the server whitelist.")
                 .WithContextTypes(InteractionContextType.Guild)
                 .AddOption("username", ApplicationCommandOptionType.String, "The username to add", isRequired: true, minLength: 4, maxLength: 15);
+
             await _client.Rest.CreateGuildCommand(builder.Build(), guild.Id);
+
+            _logger.LogInformation("Registered commands.");
         }
 
         private async Task HandleCommand(SocketSlashCommand command)
@@ -64,7 +64,7 @@ namespace TheDoorman
 
             var message = await result;
 
-            await command.RespondAsync(text: message, ephemeral: true);
+            await command.RespondAsync(text: message, ephemeral: false);
         }
     }
 }
