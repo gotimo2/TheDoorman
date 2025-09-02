@@ -37,6 +37,9 @@ namespace TheDoorman
         private async Task CreateCommands()
         {
             var guild = _client.GetGuild(_config.GuildId);
+
+            _logger.LogInformation("Registering commands in Guild {GuildName}", guild?.Name ?? throw new ArgumentException($"No guild found by ID {_config.GuildId}"));
+
             var builder = new SlashCommandBuilder()
                 .WithName(CommandNames.Checkin)
                 .WithDescription("Add the specified name to the server whitelist.")
