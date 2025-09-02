@@ -15,7 +15,6 @@ namespace TheDoorman
         private readonly ILogger<RCONService> _logger;
         private readonly RconConfig _config;
         private readonly RCON _client;
-        private readonly Regex _validNameRegex = ValidUsernameRegex();
 
         public RCONService(ILogger<RCONService> logger, IOptions<RconConfig> config)
         {
@@ -27,6 +26,8 @@ namespace TheDoorman
 
         public async Task<string> AddToWhitelist(string username)
         {
+            _logger.LogInformation("Adding user {Username} to whitelist.", username);
+
             var isValid = ValidUsernameRegex().IsMatch(username) && username.Length > 3 && username.Length < 16;
 
             if (!isValid)
@@ -36,7 +37,9 @@ namespace TheDoorman
 
             await _client.ConnectAsync();
 
-            await _client.SendCommandAsync(string.Format("whitelist add {0}", username));
+            var result = await _client.SendCommandAsync(string.Format("whitelist add {0}", username));
+
+            _logger.LogDebug("Server response: {result}", result);
 
             return $"Added user {username} to whitelist.";
         }

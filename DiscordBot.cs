@@ -40,7 +40,6 @@ namespace TheDoorman
         private async Task CreateCommand()
         {
             var guild = _client.GetGuild(_config.GuildId);
-            //1309276024890069064
             var builder = new SlashCommandBuilder()
                 .WithName(CommandNames.Checkin)
                 .WithDescription("Add the specified name to the server whitelist.")
