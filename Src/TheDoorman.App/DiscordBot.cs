@@ -14,7 +14,25 @@ namespace TheDoorman
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Connecting to discord...");
+            if (string.IsNullOrEmpty(_config.Token)) {
+                _logger.LogError("Token is empty!");
+            }
+
+            HttpClient httpclient = new HttpClient();
+
+            var result = await httpclient.GetAsync("https://discord.com/api/v10/gateway");
+            
+            if (result.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Successfully pinged discord gateway.");
+            }
+            
+            _logger.LogInformation("Connecting to discord using token {Token}...", string.Join(string.Empty, _config.Token.Take(0..3).Concat(Enumerable.Repeat('*', _config.Token.Length - 3))));
+
+            _client.Log += (log) => {
+                _logger.LogInformation("Discord.NET: {Source} : {Severity} : {Message} {Exception} ", log.Source, log.Severity.ToString(), log.Message, log.Exception.Message);
+                return Task.CompletedTask;    
+            }; 
 
             await _client.LoginAsync(TokenType.Bot, _config.Token);
 

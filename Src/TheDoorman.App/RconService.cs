@@ -21,6 +21,11 @@ namespace TheDoorman
             _logger = logger;
             _config = config.Value ?? throw new ArgumentException("No config found for RCON client.");
 
+            if (string.IsNullOrEmpty(_config.HostIpAddress))
+            {
+                _logger.LogError("No IP Address provided!");
+            }
+
             _client = new RCON(new IPEndPoint(IPAddress.Parse(_config.HostIpAddress), _config.RCONPort), _config.RCONPassword);
         }
 
