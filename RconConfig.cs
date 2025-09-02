@@ -8,7 +8,7 @@ namespace TheDoorman
 {
     public class RconConfig
     {
-        public string Host { get; set; } = string.Empty;
+        public string HostIpAddress { get; set; } = string.Empty;
 
         public int RCONPort { get; set; } = 25575; 
 
