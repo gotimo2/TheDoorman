@@ -10,6 +10,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 COPY ["TheDoorman.csproj", "."]
+COPY ["Directory.Packages.props", "."]
 RUN dotnet restore "./TheDoorman.csproj"
 COPY . .
 RUN dotnet build "./TheDoorman.csproj" -c $BUILD_CONFIGURATION -o /app/build
