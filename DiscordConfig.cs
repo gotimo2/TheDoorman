@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace TheDoorman
 {
-    public class RCONService(ILogger<RCONService> logger, IOptions<RconConfig> config)
+    public class DiscordConfig
     {
+        public string Token { get; set; } = string.Empty;
     }
 }
