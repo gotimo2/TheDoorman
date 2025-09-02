@@ -18,10 +18,11 @@ RUN apt-get update \
     clang zlib1g-dev
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["TheDoorman.App/TheDoorman.App.csproj", "TheDoorman.App/"]
+COPY ["TheDoorman.App.csproj", "TheDoorman.App/"]
+COPY ["Directory.Packages.props", "TheDoorman.App/"]
 RUN dotnet restore "./TheDoorman.App/TheDoorman.App.csproj"
-COPY . .
 WORKDIR "/src/TheDoorman.App"
+COPY . .
 RUN dotnet build "./TheDoorman.App.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
