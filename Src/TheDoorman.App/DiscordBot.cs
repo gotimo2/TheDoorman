@@ -11,6 +11,7 @@ namespace TheDoorman
         private readonly DiscordConfig _config = config.Value ?? throw new ArgumentException("No Discord configuration provided.");
         private readonly DiscordSocketClient _client = client;
         private readonly RCONService _rcon = rcon;
+        private bool _ready = false;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -32,15 +33,29 @@ namespace TheDoorman
             _client.Log += (log) => {
                 _logger.LogInformation("Discord.NET: {Source} : {Severity} : {Message} {Exception} ", log.Source, log.Severity.ToString(), log.Message, log.Exception.Message);
                 return Task.CompletedTask;    
-            }; 
+            };
+
+            _client.Ready += () =>
+            {
+                _ready = true;
+                return Task.CompletedTask;
+            };
 
             await _client.LoginAsync(TokenType.Bot, _config.Token);
 
             await _client.StartAsync();
 
+
             while (_client.ConnectionState != ConnectionState.Connected)
             { 
                 await Task.Delay(1000, stoppingToken);
+            }
+
+            _logger.LogInformation("Connected to Discord, waiting to be ready...");
+
+            while (!_ready) {
+
+                await Task.Delay(500, stoppingToken);
             }
 
             _logger.LogInformation("Connected to discord under {Account}", _client.CurrentUser.Username);
