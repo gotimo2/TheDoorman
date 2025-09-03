@@ -40,7 +40,7 @@ namespace TheDoorman
 
             while (_client.ConnectionState != ConnectionState.Connected)
             { 
-                await Task.Delay(100, stoppingToken);
+                await Task.Delay(1000, stoppingToken);
             }
 
             _logger.LogInformation("Connected to discord under {Account}", _client.CurrentUser.Username);
@@ -54,7 +54,7 @@ namespace TheDoorman
 
         private async Task CreateCommands()
         {
-            var guild = _client.GetGuild(_config.GuildId);
+            var guild = _client.Guilds.FirstOrDefault(e => e.Id == _config.GuildId);
 
             _logger.LogInformation("Registering commands in Guild {GuildName}", guild?.Name ?? throw new ArgumentException($"No guild found by ID {_config.GuildId}"));
 
