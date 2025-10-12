@@ -18,15 +18,6 @@ namespace TheDoorman
             if (string.IsNullOrEmpty(_config.Token)) {
                 _logger.LogError("Token is empty!");
             }
-
-            HttpClient httpclient = new HttpClient();
-
-            var result = await httpclient.GetAsync("https://discord.com/api/v10/gateway");
-            
-            if (result.IsSuccessStatusCode)
-            {
-                _logger.LogInformation("Successfully pinged discord gateway.");
-            }
             
             _logger.LogInformation("Connecting to discord using token {Token}...", string.Join(string.Empty, _config.Token.Take(0..3).Concat(Enumerable.Repeat('*', _config.Token.Length - 3))));
 
@@ -40,6 +31,16 @@ namespace TheDoorman
                 _ready = true;
                 return Task.CompletedTask;
             };
+
+            _client.Disconnected += async (ex) =>
+            {
+                _ready = false;
+                await _client.StopAsync();
+                await _client.LogoutAsync();
+                await _client.LoginAsync(TokenType.Bot, _config.Token);
+                await _client.StartAsync();
+            };
+
 
             await _client.LoginAsync(TokenType.Bot, _config.Token);
 
@@ -87,10 +88,6 @@ namespace TheDoorman
         private async Task HandleCommand(SocketSlashCommand command)
         {
             _logger.LogDebug("Handling command {Name}", command.CommandName);
-
-#if DEBUG
-            await command.DeferAsync();
-#endif
 
             Task<string> result = command.CommandName switch
             {
