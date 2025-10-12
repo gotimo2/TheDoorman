@@ -1,4 +1,4 @@
-name: Build a docker image
+name: Build a .NET project
 
 on:
   push:
@@ -12,4 +12,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build Src/TheDoorman.App/ --file Src/TheDoorman.App/Dockerfile --tag the-doorman:$(date +%s)
+      run: dotnet build Src/TheDoorman.App
